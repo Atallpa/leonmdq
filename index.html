@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Responsiva con Carrusel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Estilos personalizados para el carrusel y fuentes */
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden; /* Prevenir el scroll horizontal */
+        }
+        .carousel-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh; /* Altura completa de la ventana */
+            overflow: hidden;
+        }
+        .carousel-slide {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            transition: opacity 0.7s ease-in-out;
+            display: flex; /* Usar flexbox para centrar la imagen */
+            justify-content: center;
+            align-items: center;
+        }
+        .carousel-slide.active {
+            opacity: 1;
+        }
+        .carousel-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Cubrir el área manteniendo el aspecto */
+            object-position: bottom; /* Centrar la imagen */
+        }
+        .carousel-button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            padding: 1rem;
+            border-radius: 9999px; /* Completamente redondo */
+            cursor: pointer;
+            z-index: 10;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.3s ease, background-color 0.3s ease; /* Transición para opacidad */
+            opacity: 0; /* Oculto por defecto */
+            pointer-events: none; /* No interactuable cuando está oculto */
+        }
+        .carousel-container:hover .carousel-button {
+            opacity: 1; /* Visible al hacer hover en el contenedor del carrusel */
+            pointer-events: auto; /* Interactuable al hacer hover */
+        }
+        .carousel-button:hover {
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+        .carousel-button.prev {
+            left: 1rem;
+        }
+        .carousel-button.next {
+            right: 1rem;
+        }
+        .carousel-dots {
+            position: absolute;
+            bottom: 1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 0.5rem;
+            z-index: 10;
+        }
+        .carousel-dot {
+            width: 0.75rem;
+            height: 0.75rem;
+            background-color: rgba(255, 255, 255, 0.5);
+            border-radius: 9999px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, width 0.3s ease;
+        }
+        .carousel-dot.active {
+            background-color: white;
+            width: 1.5rem; /* Un poco más ancho cuando está activo */
+        }
+        #foto {
+            width: 600px;
+            height: 400px;
+            border-radius: 1rem;
+        }
+
+        /* Estilos para 4K y pantallas grandes */
+        @media (min-width: 1921px) { /* Para pantallas 4K y superiores */
+            .text-4k-xl { font-size: 3.5rem; line-height: 1; }
+            .text-4k-lg { font-size: 2.5rem; line-height: 1; }
+            .p-4k { padding: 8rem; }
+        }
+
+        /* Estilo para botones de llamada a la acción en el carrusel */
+        .cta-button {
+            @apply px-8 py-4 rounded-full font-bold text-lg sm:text-xl lg:text-2xl shadow-xl transition-all duration-300 transform hover:scale-105;
+        }
+        /* Estilo para los botones del footer con border-radius de 20px */
+        .footer-button {
+            @apply px-4 py-2 rounded-[20px] bg-gray-700 text-white font-semibold hover:bg-gray-600 transition-colors duration-300 text-sm sm:text-base;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <section class="carousel-container">
+        <div class="carousel-slide active" id="slide1">
+            <img src="https://res.cloudinary.com/dcjp6t6w9/image/upload/v1747775906/WhatsApp_Image_2025-05-20_at_23.12.18_lrtvqw.jpg" alt="Imagen 1 del carrusel">
+            <div class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-40 rounded-lg">
+                <h2 class="text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-4k-xl font-bold text-center p-4 rounded-lg">
+                    Toyota Corolla 2025 a la VENTA
+                </h2>
+            </div>
+        </div>
+        <div class="carousel-slide" id="slide2">
+            <img src="https://placehold.co/1920x1080/28a745/ffffff?text=Imagen+2" alt="Imagen 2 del carrusel">
+            <div class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-40 rounded-lg">
+                <h2 class="text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-4k-xl font-bold text-center p-4 rounded-lg">
+                    Diseño Adaptable para Todos
+                </h2>
+            </div>
+        </div>
+        <div class="carousel-slide" id="slide3">
+            <img src="https://placehold.co/1920x1080/ffc107/333333?text=Imagen+3" alt="Imagen 3 del carrusel">
+            <div class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-40 rounded-lg">
+                <h2 class="text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-4k-xl font-bold text-center p-4 rounded-lg">
+                    Experiencia Visual Impresionante
+                </h2>
+            </div>
+        </div>
+        <div class="carousel-slide" id="slide4">
+            <img src="https://placehold.co/1920x1080/dc3545/ffffff?text=Imagen+4" alt="Imagen 4 del carrusel">
+            <div class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-40 rounded-lg">
+                <h2 class="text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-4k-xl font-bold text-center p-4 rounded-lg">
+                    Paisajes Increíbles
+                </h2>
+            </div>
+        </div>
+        <div class="carousel-slide" id="slide5">
+            <img src="https://placehold.co/1920x1080/6f42c1/ffffff?text=Imagen+5" alt="Imagen 5 del carrusel">
+            <div class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-40 rounded-lg">
+                <h2 class="text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-4k-xl font-bold text-center p-4 rounded-lg">
+                    Tecnología Avanzada
+                </h2>
+            </div>
+        </div>
+        <div class="carousel-slide" id="slide6">
+            <img src="https://placehold.co/1920x1080/20c997/ffffff?text=Imagen+6" alt="Imagen 6 del carrusel">
+            <div class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-40 rounded-lg">
+                <h2 class="text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-4k-xl font-bold text-center p-4 rounded-lg">
+                    Momentos Inolvidables
+                </h2>
+            </div>
+        </div>
+        <div class="carousel-slide" id="slide7">
+            <img src="https://placehold.co/1920x1080/fd7e14/ffffff?text=Imagen+7" alt="Imagen 7 del carrusel">
+            <div class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-40 rounded-lg">
+                <h2 class="text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-4k-xl font-bold text-center p-4 rounded-lg">
+                    Innovación Constante
+                </h2>
+            </div>
+        </div>
+        <div class="carousel-slide" id="slide8">
+            <img src="https://placehold.co/1920x1080/6610f2/ffffff?text=Imagen+8" alt="Imagen 8 del carrusel">
+            <div class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-40 rounded-lg">
+                <h2 class="text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-4k-xl font-bold text-center p-4 rounded-lg">
+                    Diseño Minimalista
+                </h2>
+            </div>
+        </div>
+        <div class="carousel-slide" id="slide9">
+            <img src="https://placehold.co/1920x1080/e83e8c/ffffff?text=Imagen+9" alt="Imagen 9 del carrusel">
+            <div class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-40 rounded-lg">
+                <h2 class="text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-4k-xl font-bold text-center p-4 rounded-lg">
+                    Naturaleza y Armonía
+                </h2>
+            </div>
+        </div>
+        <div class="carousel-slide" id="slide10">
+            <img src="https://placehold.co/1920x1080/6c757d/ffffff?text=Imagen+10" alt="Imagen 10 del carrusel">
+            <div class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-40 rounded-lg">
+                <h2 class="text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-4k-xl font-bold text-center p-4 rounded-lg">
+                    Futuro Brillante
+                </h2>
+            </div>
+        </div>
+        <div class="carousel-slide" id="slide11">
+            <img src="https://placehold.co/1920x1080/17a2b8/ffffff?text=Imagen+11" alt="Imagen 11 del carrusel">
+            <div class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-40 rounded-lg">
+                <h2 class="text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-4k-xl font-bold text-center p-4 rounded-lg">
+                    Tu Visión Hecha Realidad
+                </h2>
+            </div>
+        </div>
+
+        <div class="absolute inset-x-0 bottom-0 flex flex-col items-center justify-center z-20 p-4 mb-[150px]">
+            <div class="flex flex-col sm:flex-row gap-4">
+                <button class="mt-6 px-6 py-3 bg-purple-600 text-white font-semibold rounded-full shadow-md hover:bg-purple-800 transition-colors duration-300 text-base sm:text-lg">
+                    Saber Más 
+                </button>
+                <button class="mt-6 px-6 py-3 bg-blue-600 text-white font-semibold rounded-full shadow-md hover:bg-blue-700 transition-colors duration-300 text-base sm:text-lg">
+                    Contáctanos
+                </button>
+            </div>
+        </div>
+
+        <button class="carousel-button prev" aria-label="Anterior">&#10094;</button>
+        <button class="carousel-button next" aria-label="Siguiente">&#10095;</button>
+
+        <div class="carousel-dots">
+            <span class="carousel-dot active" data-slide="0"></span>
+            <span class="carousel-dot" data-slide="1"></span>
+            <span class="carousel-dot" data-slide="2"></span>
+            <span class="carousel-dot" data-slide="3"></span>
+            <span class="carousel-dot" data-slide="4"></span>
+            <span class="carousel-dot" data-slide="5"></span>
+            <span class="carousel-dot" data-slide="6"></span>
+            <span class="carousel-dot" data-slide="7"></span>
+            <span class="carousel-dot" data-slide="8"></span>
+            <span class="carousel-dot" data-slide="9"></span>
+            <span class="carousel-dot" data-slide="10"></span>
+        </div>
+    </section>
+
+    <section class="container mx-auto p-8 sm:p-12 md:p-16 lg:p-20 xl:p-24 2xl:p-32 my-12 bg-white shadow-lg rounded-xl">
+        <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold text-center mb-8 text-blue-700 text-4k-lg rounded-lg">
+            Nuestra Sección Destacada
+        </h2>
+        <div class="flex flex-col md:flex-row items-center gap-8">
+            <div class="md:w-1/2" id="foto">
+                <img src="https://res.cloudinary.com/dcjp6t6w9/image/upload/v1747777745/Gemini_Generated_Image_d1f8f7d1f8f7d1f8_idi74u.jpg" alt="Contenido Visual" class="w-full h-auto rounded-lg shadow-md object-cover">
+            </div>
+            <div class="md:w-1/2">
+                <p class="text-base sm:text-lg md:text-xl lg:text-2xl leading-relaxed text-4k-lg">
+                    Esta sección está diseñada para mostrar información clave o características de tu producto/servicio. Es completamente responsiva, ajustándose elegantemente a cualquier tamaño de pantalla, desde los dispositivos móviles más pequeños hasta las enormes pantallas 4K.
+                </p>
+                <p class="mt-4 text-base sm:text-lg md:text-xl lg:text-2xl leading-relaxed text-4k-lg">
+                    Utilizamos las clases de utilidad de Tailwind CSS para asegurar que el contenido se vea perfecto en 1080p, tabletas y teléfonos, manteniendo la legibilidad y la estética en todo momento.
+                </p>
+                <button class="mt-6 px-6 py-3 bg-blue-600 text-white font-semibold rounded-full shadow-md hover:bg-blue-700 transition-colors duration-300 text-base sm:text-lg">
+                    Más Información
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-gray-800 text-white p-6 sm:p-8 md:p-10 lg:p-12 xl:p-14 2xl:p-16 text-center rounded-t-xl">
+        <p class="text-sm sm:text-base md:text-lg lg:text-xl text-4k-lg">
+            &copy; 2025 Tu Empresa. Todos los derechos reservados.
+        </p>
+        <div class="mt-4 flex justify-center space-x-4">
+            <button class="footer-button">
+                Política de Privacidad
+            </button>
+            <span class="text-gray-400 flex items-center">|</span>
+            <button class="footer-button">
+                Términos de Servicio
+            </button>
+        </div>
+    </footer>
+
+    <script>
+        const slides = document.querySelectorAll('.carousel-slide');
+        const dots = document.querySelectorAll('.carousel-dot');
+        const prevButton = document.querySelector('.carousel-button.prev');
+        const nextButton = document.querySelector('.carousel-button.next');
+        let currentSlide = 0;
+
+        // Función para mostrar un slide específico
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.remove('active');
+                if (dots[i]) {
+                    dots[i].classList.remove('active');
+                }
+            });
+            slides[index].classList.add('active');
+            if (dots[index]) {
+                dots[index].classList.add('active');
+            }
+            currentSlide = index;
+        }
+
+        // Navegación con botones
+        prevButton.addEventListener('click', () => {
+            currentSlide = (currentSlide === 0) ? slides.length - 1 : currentSlide - 1;
+            showSlide(currentSlide);
+        });
+
+        nextButton.addEventListener('click', () => {
+            currentSlide = (currentSlide === slides.length - 1) ? 0 : currentSlide + 1;
+            showSlide(currentSlide);
+        });
+
+        // Navegación con puntos
+        dots.forEach(dot => {
+            dot.addEventListener('click', (event) => {
+                const slideIndex = parseInt(event.target.dataset.slide);
+                showSlide(slideIndex);
+            });
+        });
+
+        // Autoplay del carrusel
+        let autoPlayInterval;
+        function startAutoPlay() {
+            autoPlayInterval = setInterval(() => {
+                nextButton.click(); // Simula un click en el botón siguiente
+            }, 5000); // Cambia cada 5 segundos
+        }
+
+        function stopAutoPlay() {
+            clearInterval(autoPlayInterval);
+        }
+
+        // Iniciar autoplay al cargar la página
+        window.onload = function() {
+            showSlide(0); // Asegura que el primer slide esté activo al cargar
+            startAutoPlay();
+        };
+
+        // Pausar autoplay al interactuar con el carrusel (opcional)
+        const carouselContainer = document.querySelector('.carousel-container');
+        carouselContainer.addEventListener('mouseenter', stopAutoPlay);
+        carouselContainer.addEventListener('mouseleave', startAutoPlay);
+
+        // Manejo de redimensionamiento para asegurar que el carrusel se ajuste
+        window.addEventListener('resize', () => {
+            // No es necesario ajustar explícitamente el tamaño de la imagen aquí
+            // ya que object-fit: cover y width/height: 100% se encargan de eso.
+            // Solo asegura que si hay lógica de cálculo de dimensiones, se re-ejecute.
+        });
+    </script>
+</body>
+</html>
